@@ -25,11 +25,11 @@ A simple JOSM plugin that allows you to load GeoJSON data from any URL with auto
 ```bash
 # macOS/Linux
 mkdir -p ~/.josm/plugins
-curl -L "https://github.com/YOUR_USERNAME/testjosmplugin/releases/latest/download/URLLoader.jar" -o ~/.josm/plugins/URLLoader.jar
+curl -L "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/URLLoader.jar" -o ~/.josm/plugins/URLLoader.jar
 
 # Windows (PowerShell)
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\JOSM\plugins"
-Invoke-WebRequest -Uri "https://github.com/YOUR_USERNAME/testjosmplugin/releases/latest/download/URLLoader.jar" -OutFile "$env:APPDATA\JOSM\plugins\URLLoader.jar"
+Invoke-WebRequest -Uri "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/URLLoader.jar" -OutFile "$env:APPDATA\JOSM\plugins\URLLoader.jar"
 ```
 
 ## Usage
@@ -97,8 +97,8 @@ The plugin will automatically:
 
 ### Build Steps
 ```bash
-git clone https://github.com/YOUR_USERNAME/testjosmplugin.git
-cd testjosmplugin
+git clone https://github.com/kshitijrajsharma/lcgeojosmplugin.git
+cd lcgeojosmplugin
 ./gradlew build
 ```
 
