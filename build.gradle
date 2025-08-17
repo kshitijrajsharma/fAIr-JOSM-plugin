@@ -22,7 +22,7 @@ jar {
     archiveBaseName = 'fAIrLoader'
     manifest {
         attributes(
-            'Plugin-Class': 'org.openstreetmap.josm.plugins.urlloader.URLLoaderPlugin',
+            'Plugin-Class': 'org.openstreetmap.josm.plugins.fairloader.FAIrLoaderPlugin',
             'Plugin-Description': 'Load fAIr prediction data with intuitive interface for HOT fAIr API',
             'Plugin-Version': '1.0',
             'Plugin-Mainversion': '17000',

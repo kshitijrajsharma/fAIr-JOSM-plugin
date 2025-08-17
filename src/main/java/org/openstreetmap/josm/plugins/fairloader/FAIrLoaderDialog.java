@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.urlloader;
+package org.openstreetmap.josm.plugins.fairloader;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class URLLoaderDialog extends JDialog {
+public class FAIrLoaderDialog extends JDialog {
     
     private JTextField predictionUidField;
     private JComboBox<ServerOption> serverComboBox;
@@ -52,7 +52,7 @@ public class URLLoaderDialog extends JDialog {
         }
     }
 
-    public URLLoaderDialog(Frame parent) {
+    public FAIrLoaderDialog(Frame parent) {
         super(parent, "Load from fAIr", true);
         initComponents();
         setupLayout();
@@ -246,7 +246,7 @@ public class URLLoaderDialog extends JDialog {
         SwingUtilities.invokeLater(() -> {
             try {
                 Bounds bounds = getCurrentViewBounds();
-                URLLoader loader = new URLLoader();
+                FAIrLoader loader = new FAIrLoader();
                 loader.loadFromURL(url, bounds, "fAIr_" + predictionUid);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(MainApplication.getMainFrame(), 

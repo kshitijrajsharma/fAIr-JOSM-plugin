@@ -1,15 +1,15 @@
-package org.openstreetmap.josm.plugins.urlloader;
+package org.openstreetmap.josm.plugins.fairloader;
 
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MainMenu;
 
-public class URLLoaderPlugin extends Plugin {
+public class FAIrLoaderPlugin extends Plugin {
     
-    public URLLoaderPlugin(PluginInformation info) {
+    public FAIrLoaderPlugin(PluginInformation info) {
         super(info);
         MainMenu mainMenu = MainApplication.getMenu();
-        mainMenu.toolsMenu.add(new URLLoaderAction());
+        mainMenu.toolsMenu.add(new FAIrLoaderAction());
     }
 }

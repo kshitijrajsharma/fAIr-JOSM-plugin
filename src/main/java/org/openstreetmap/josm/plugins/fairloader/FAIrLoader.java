@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.urlloader;
+package org.openstreetmap.josm.plugins.fairloader;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,11 +21,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class URLLoader {
+public class FAIrLoader {
     
     private ObjectMapper objectMapper;
 
-    public URLLoader() {
+    public FAIrLoader() {
         this.objectMapper = new ObjectMapper();
     }
 
