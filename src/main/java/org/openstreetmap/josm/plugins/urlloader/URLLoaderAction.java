@@ -11,9 +11,9 @@ import java.awt.event.KeyEvent;
 public class URLLoaderAction extends JosmAction {
     
     public URLLoaderAction() {
-        super("Load from URL", "urlloader", "Load GeoJSON data from URL",
-                Shortcut.registerShortcut("urlloader:load", "Load from URL",
-                        KeyEvent.VK_U, Shortcut.CTRL_SHIFT), true);
+        super("Load from fAIr", "urlloader", "Load GeoJSON data from fAIr API",
+                Shortcut.registerShortcut("urlloader:load", "Load from fAIr",
+                        KeyEvent.VK_F, Shortcut.CTRL_SHIFT), true);
     }
 
     @Override

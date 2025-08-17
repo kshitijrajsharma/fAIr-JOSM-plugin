@@ -35,6 +35,13 @@ public class URLLoader {
         DataSet dataSet = parseGeoJSON(geoJsonData);
         addLayerToJOSM(dataSet, urlString);
     }
+    
+    public void loadFromURL(String urlString, Bounds bounds, String layerName) throws IOException, URISyntaxException {
+        String finalUrl = prepareFinalURL(urlString, bounds);
+        String geoJsonData = fetchData(finalUrl);
+        DataSet dataSet = parseGeoJSON(geoJsonData);
+        addLayerToJOSMWithName(dataSet, layerName);
+    }
 
     private String prepareFinalURL(String urlString, Bounds bounds) {
         if (bounds == null || !urlString.contains("{bbox}")) {
@@ -155,6 +162,10 @@ public class URLLoader {
 
     private void addLayerToJOSM(DataSet dataSet, String sourceUrl) {
         String layerName = "URL Data: " + extractFileName(sourceUrl);
+        addLayerToJOSMWithName(dataSet, layerName);
+    }
+    
+    private void addLayerToJOSMWithName(DataSet dataSet, String layerName) {
         OsmDataLayer layer = new OsmDataLayer(dataSet, layerName, null);
         MainApplication.getLayerManager().addLayer(layer);
     }

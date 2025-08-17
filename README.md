@@ -1,13 +1,16 @@
 # JOSM fAIrLoader Plugin
 
-A simple JOSM plugin that allows you to load fAIr Prediction GeoJSON data from any URL with automatic bounding box support.
+A JOSM plugin specifically designed to load fAIr prediction data with an intuitive interface for HOT's fAIr API.
 
 ## Features
 
-- Load GeoJSON data from any URL
-- Automatic bounding box detection from current JOSM view
-- Support for URLs with `{bbox}` placeholder
-- Loads data as a new layer in JOSM
+- **fAIr-specific interface**: Built specifically for HOT's fAIr prediction API
+- **Server selection**: Choose between Production and Development servers
+- **Format options**: Support for GeoJSON and OSM XML formats
+- **Auto URL construction**: Automatically builds fAIr API URLs from prediction UID
+- **Editable URLs**: Generated URLs can be manually edited if needed
+- **Custom layer naming**: Creates layers named `fAIr_[prediction_uid]`
+- **Automatic bounding box**: Uses current JOSM view bounds automatically
 - Supports all GeoJSON geometry types (Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon)
 
 ## Installation
@@ -45,24 +48,39 @@ Invoke-WebRequest -Uri "https://github.com/kshitijrajsharma/lcgeojosmplugin/rele
 ## Usage
 
 1. Open JOSM and navigate to your area of interest
-2. Go to **Tools** → **Load from URL** (or use Ctrl+Shift+U)
-3. Enter your URL in the dialog:
-   - **For bbox-enabled URLs**: `https://example.com/api/data?bbox={bbox}`
-   - **For direct URLs**: `https://example.com/data.geojson`
+2. Go to **Tools** → **Load from fAIr** (or use Ctrl+Shift+F)
+3. In the fAIr dialog:
+   - **Enter Prediction UID**: Type your prediction identifier (e.g., `prediction_100`)
+   - **Select Server**: Choose Production (default) or Development
+   - **Select Format**: Choose GeoJSON (default) or OSM XML
+   - **Review URL**: The URL is auto-generated but can be edited
 4. Click **Load**
 
-### URL Examples
+The plugin will:
+- Automatically use your current JOSM view bounds
+- Create a new layer named `fAIr_[your_prediction_uid]`
+- Load the prediction data without affecting existing layers
 
-**With bbox support:**
+## fAIr API Integration
+
+### Server Options
+- **Production**: `api-prod.fair.hotosm.org` (default)
+- **Development**: `fair-dev.hotosm.org`
+
+### Generated URL Format
 ```
-https://overpass-api.de/api/interpreter?data=[out:json][bbox:{bbox}];way[highway];out;
-https://api.example.com/geojson?bbox={bbox}
+https://[server]/api/v1/workspace/stream/[prediction_uid]/labels.[format]?bbox={bbox}&format=[format]
 ```
 
-**Direct GeoJSON URLs:**
+### Example URLs Generated
+**Production GeoJSON:**
 ```
-https://raw.githubusercontent.com/user/repo/main/data.geojson
-https://api.github.com/repos/user/repo/contents/data.geojson
+https://api-prod.fair.hotosm.org/api/v1/workspace/stream/prediction_100/labels.fgb?bbox={bbox}&format=geojson
+```
+
+**Development OSM XML:**
+```
+https://fair-dev.hotosm.org/api/v1/workspace/stream/prediction_100/labels.fgb?bbox={bbox}&format=osmxml
 ```
 
 ### Bbox Transformation
