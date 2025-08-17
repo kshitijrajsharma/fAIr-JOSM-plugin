@@ -25,7 +25,7 @@ jar {
             'Plugin-Class': 'org.openstreetmap.josm.plugins.urlloader.URLLoaderPlugin',
             'Plugin-Description': 'Load GeoJSON data from URL with bbox support',
             'Plugin-Version': '1.0',
-            'Plugin-Mainversion': '18700',
+            'Plugin-Mainversion': '17000',
             'Plugin-Author': 'URLLoader'
         )
     }
