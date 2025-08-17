@@ -19,6 +19,7 @@ public class FAIrLoaderDialog extends JDialog {
     private JComboBox<ServerOption> serverComboBox;
     private JComboBox<FormatOption> formatComboBox;
     private JTextArea urlTextArea;
+    private JTextField bboxField;
     private JButton loadButton;
     private JButton cancelButton;
 
@@ -84,6 +85,11 @@ public class FAIrLoaderDialog extends JDialog {
         urlTextArea.setWrapStyleWord(true);
         urlTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         
+        bboxField = new JTextField(30);
+        bboxField.setEditable(false);
+        bboxField.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        bboxField.setBackground(getBackground());
+        
         loadButton = new JButton("Load");
         cancelButton = new JButton("Cancel");
     }
@@ -136,11 +142,24 @@ public class FAIrLoaderDialog extends JDialog {
         gbc.gridy = 3;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
+        gbc.insets = new Insets(5, 10, 5, 5);
+        mainPanel.add(new JLabel("Current Bbox:"), gbc);
+        
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        gbc.insets = new Insets(5, 5, 5, 10);
+        mainPanel.add(bboxField, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
         gbc.insets = new Insets(15, 10, 5, 5);
         mainPanel.add(new JLabel("Generated URL:"), gbc);
         
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -213,6 +232,8 @@ public class FAIrLoaderDialog extends JDialog {
         ServerOption selectedServer = (ServerOption) serverComboBox.getSelectedItem();
         FormatOption selectedFormat = (FormatOption) formatComboBox.getSelectedItem();
         
+        updateBboxField();
+        
         if (predictionUid.isEmpty()) {
             urlTextArea.setText("");
             loadButton.setEnabled(false);
@@ -226,6 +247,18 @@ public class FAIrLoaderDialog extends JDialog {
         
         urlTextArea.setText(url);
         loadButton.setEnabled(true);
+    }
+    
+    private void updateBboxField() {
+        Bounds bounds = getCurrentViewBounds();
+        if (bounds != null) {
+            String bbox = String.format("%f,%f,%f,%f", 
+                bounds.getMinLon(), bounds.getMinLat(), 
+                bounds.getMaxLon(), bounds.getMaxLat());
+            bboxField.setText(bbox);
+        } else {
+            bboxField.setText("No map bounds available");
+        }
     }
 
     private void loadData() {
