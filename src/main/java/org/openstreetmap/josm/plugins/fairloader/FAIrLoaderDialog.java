@@ -231,13 +231,13 @@ public class FAIrLoaderDialog extends JDialog {
     private void loadData() {
         String predictionUid = predictionUidField.getText().trim();
         if (predictionUid.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a Prediction UID", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please enter a Prediction UID", "Missing Information", JOptionPane.WARNING_MESSAGE);
             return;
         }
         
         String url = urlTextArea.getText().trim();
         if (url.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "URL is empty", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "URL is empty", "Missing Information", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -248,9 +248,25 @@ public class FAIrLoaderDialog extends JDialog {
                 Bounds bounds = getCurrentViewBounds();
                 FAIrLoader loader = new FAIrLoader();
                 loader.loadFromURL(url, bounds, "fAIr_" + predictionUid);
-            } catch (Exception ex) {
+                
                 JOptionPane.showMessageDialog(MainApplication.getMainFrame(), 
-                    "Error loading data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    "Successfully loaded fAIr prediction data for UID: " + predictionUid + "\n" +
+                    "Layer 'fAIr_" + predictionUid + "' has been added to JOSM.", 
+                    "Data Loaded Successfully", 
+                    JOptionPane.INFORMATION_MESSAGE);
+                    
+            } catch (Exception ex) {
+                String errorMessage = ex.getMessage();
+                if (errorMessage.contains("UnknownHostException") || errorMessage.contains("ConnectException")) {
+                    errorMessage = "❌ Cannot connect to fAIr server. Please check your internet connection.";
+                } else if (errorMessage.contains("timeout")) {
+                    errorMessage = "❌ Request timed out. The fAIr server may be busy. Please try again.";
+                } else if (!errorMessage.startsWith("❌")) {
+                    errorMessage = "❌ Error loading data: " + errorMessage;
+                }
+                
+                JOptionPane.showMessageDialog(MainApplication.getMainFrame(), 
+                    errorMessage, "Loading Failed", JOptionPane.ERROR_MESSAGE);
             }
         });
     }

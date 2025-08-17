@@ -44,7 +44,11 @@ public class FAIrLoader {
     }
 
     private String prepareFinalURL(String urlString, Bounds bounds) {
-        if (bounds == null || !urlString.contains("{bbox}")) {
+        if (bounds == null) {
+            return urlString.replace("{bbox}", "");
+        }
+        
+        if (!urlString.contains("{bbox}")) {
             return urlString;
         }
         
@@ -61,7 +65,20 @@ public class FAIrLoader {
         request.setHeader("Accept", "application/json, application/geo+json");
         
         HttpResponse response = httpClient.execute(request);
-        return EntityUtils.toString(response.getEntity());
+        int statusCode = response.getStatusLine().getStatusCode();
+        
+        if (statusCode == 200) {
+            String responseBody = EntityUtils.toString(response.getEntity());
+            return responseBody;
+        } else if (statusCode == 404) {
+            throw new IOException("URL not found (404). Please check the prediction UID and try again.");
+        } else if (statusCode == 403) {
+            throw new IOException("Access denied (403). You may not have permission to access this resource.");
+        } else if (statusCode == 500) {
+            throw new IOException("Server error (500). The fAIr server is experiencing issues. Please try again later.");
+        } else {
+            throw new IOException("Failed to load data. Server returned status: " + statusCode + " - " + response.getStatusLine().getReasonPhrase());
+        }
     }
 
     private DataSet parseGeoJSON(String geoJsonData) throws IOException {
