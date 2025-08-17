@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# Test script for JOSM URL Loader Plugin
+# Test script for JOSM fAIrLoader Plugin
 # This script installs the plugin locally for testing
 
 set -e
 
-echo "Building JOSM URL Loader Plugin..."
+echo "Building JOSM fAIrLoader Plugin..."
 ./gradlew build
 
 echo "Creating JOSM plugins directory..."
-mkdir -p ~/.josm/plugins
+mkdir -p ~/Library/JOSM/plugins
 
 echo "Installing plugin..."
-cp build/libs/URLLoader.jar ~/.josm/plugins/
+cp build/libs/fAIrLoader.jar ~/Library/JOSM/plugins/
 
 echo "Plugin installed successfully!"
 echo ""
@@ -21,5 +21,3 @@ echo "1. Start JOSM"
 echo "2. Go to Tools -> Load from URL"
 echo "3. Enter a GeoJSON URL like:"
 echo "   https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson"
-echo "4. Or a bbox-enabled URL like:"
-echo "   https://overpass-api.de/api/interpreter?data=[out:json][bbox:{bbox}];way[highway];out;"

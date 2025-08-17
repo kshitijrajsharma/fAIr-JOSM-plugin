@@ -1,6 +1,6 @@
-# JOSM URL Loader Plugin
+# JOSM fAIrLoader Plugin
 
-A simple JOSM plugin that allows you to load GeoJSON data from any URL with automatic bounding box support.
+A simple JOSM plugin that allows you to load fAIr Prediction GeoJSON data from any URL with automatic bounding box support.
 
 ## Features
 
@@ -13,7 +13,7 @@ A simple JOSM plugin that allows you to load GeoJSON data from any URL with auto
 ## Installation
 
 ### Manual Installation
-1. Download the latest `URLLoader.jar` from the [releases page](../../releases)
+1. Download the latest `fAIrLoader.jar` from the [releases page](../../releases)
 2. Copy the JAR file to your JOSM plugins directory:
    - **Windows**: `%APPDATA%\JOSM\plugins\`
    - **macOS**: `~/Library/JOSM/plugins/`
@@ -26,20 +26,20 @@ A simple JOSM plugin that allows you to load GeoJSON data from any URL with auto
 **macOS:**
 ```bash
 mkdir -p ~/Library/JOSM/plugins
-curl -L "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/URLLoader.jar" -o ~/Library/JOSM/plugins/URLLoader.jar
+curl -L "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/fAIrLoader.jar" -o ~/Library/JOSM/plugins/fAIrLoader.jar
 ```
 
 **Linux:**
 ```bash
 mkdir -p ~/.local/share/JOSM/plugins
-curl -L "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/URLLoader.jar" -o ~/.local/share/JOSM/plugins/URLLoader.jar
+curl -L "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/fAIrLoader.jar" -o ~/.local/share/JOSM/plugins/fAIrLoader.jar
 
 ```
 
 **Windows (PowerShell):**
 ```powershell
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\JOSM\plugins"
-Invoke-WebRequest -Uri "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/URLLoader.jar" -OutFile "$env:APPDATA\JOSM\plugins\URLLoader.jar"
+Invoke-WebRequest -Uri "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/fAIrLoader.jar" -OutFile "$env:APPDATA\JOSM\plugins\fAIrLoader.jar"
 ```
 
 ## Usage
@@ -112,7 +112,7 @@ cd lcgeojosmplugin
 ./gradlew build
 ```
 
-The JAR will be created in `build/libs/URLLoader.jar`
+The JAR will be created in `build/libs/fAIrLoader.jar`
 
 ### Development
 The plugin includes all necessary dependencies and can be built offline after the first successful build.

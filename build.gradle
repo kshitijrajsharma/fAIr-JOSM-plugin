@@ -19,14 +19,14 @@ java {
 }
 
 jar {
-    archiveBaseName = 'URLLoader'
+    archiveBaseName = 'fAIrLoader'
     manifest {
         attributes(
             'Plugin-Class': 'org.openstreetmap.josm.plugins.urlloader.URLLoaderPlugin',
             'Plugin-Description': 'Load GeoJSON data from URL with bbox support',
             'Plugin-Version': '1.0',
             'Plugin-Mainversion': '17000',
-            'Plugin-Author': 'URLLoader'
+            'Plugin-Author': 'fAIrLoader'
         )
     }
     from {
