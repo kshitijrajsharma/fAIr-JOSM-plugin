@@ -250,14 +250,18 @@ public class FAIrLoaderDialog extends JDialog {
     }
     
     private void updateBboxField() {
-        Bounds bounds = getCurrentViewBounds();
-        if (bounds != null) {
-            String bbox = String.format("%f,%f,%f,%f", 
-                bounds.getMinLon(), bounds.getMinLat(), 
-                bounds.getMaxLon(), bounds.getMaxLat());
-            bboxField.setText(bbox);
-        } else {
-            bboxField.setText("No map bounds available");
+        try {
+            Bounds bounds = getCurrentViewBounds();
+            if (bounds != null) {
+                String bbox = String.format("%f,%f,%f,%f", 
+                    bounds.getMinLon(), bounds.getMinLat(), 
+                    bounds.getMaxLon(), bounds.getMaxLat());
+                bboxField.setText(bbox);
+            } else {
+                bboxField.setText("No map bounds available");
+            }
+        } catch (Exception e) {
+            bboxField.setText("Map not ready");
         }
     }
 
@@ -305,9 +309,12 @@ public class FAIrLoaderDialog extends JDialog {
     }
 
     private Bounds getCurrentViewBounds() {
-        MapView mapView = MainApplication.getMap().mapView;
-        if (mapView != null) {
-            return mapView.getRealBounds();
+        try {
+            if (MainApplication.getMap() != null && MainApplication.getMap().mapView != null) {
+                return MainApplication.getMap().mapView.getRealBounds();
+            }
+        } catch (Exception e) {
+            // Map not ready yet
         }
         return null;
     }
