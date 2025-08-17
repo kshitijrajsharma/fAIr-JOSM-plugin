@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly files('lib/josm.jar')
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+jar {
+    archiveBaseName = 'URLLoader'
+    manifest {
+        attributes(
+            'Plugin-Class': 'org.openstreetmap.josm.plugins.urlloader.URLLoaderPlugin',
+            'Plugin-Description': 'Load GeoJSON data from URL with bbox support',
+            'Plugin-Version': '1.0',
+            'Plugin-Mainversion': '18700',
+            'Plugin-Author': 'URLLoader'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
