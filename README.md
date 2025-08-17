@@ -1,17 +1,6 @@
 # JOSM fAIrLoader Plugin
 
-A JOSM plugin specifically designed to load fAIr prediction data with an intuitive interface for HOT's fAIr API.
-
-## Features
-
-- **fAIr-specific interface**: Built specifically for HOT's fAIr prediction API
-- **Server selection**: Choose between Production and Development servers
-- **Format options**: Support for GeoJSON and OSM XML formats
-- **Auto URL construction**: Automatically builds fAIr API URLs from prediction UID
-- **Editable URLs**: Generated URLs can be manually edited if needed
-- **Custom layer naming**: Creates layers named `fAIr_[prediction_uid]`
-- **Automatic bounding box**: Uses current JOSM view bounds automatically
-- Supports all GeoJSON geometry types (Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon)
+A JOSM plugin specifically designed to load fAIr prediction data with using an interface for HOT's fAIr API.
 
 ## Installation
 
