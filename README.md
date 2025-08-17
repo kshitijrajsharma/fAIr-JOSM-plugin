@@ -16,18 +16,28 @@ A simple JOSM plugin that allows you to load GeoJSON data from any URL with auto
 1. Download the latest `URLLoader.jar` from the [releases page](../../releases)
 2. Copy the JAR file to your JOSM plugins directory:
    - **Windows**: `%APPDATA%\JOSM\plugins\`
-   - **macOS**: `~/.josm/plugins/`
-   - **Linux**: `~/.josm/plugins/`
+   - **macOS**: `~/Library/JOSM/plugins/`
+   - **Linux**: `~/.local/share/JOSM/plugins/` (or `~/.josm/plugins/` for older installations)
 3. Restart JOSM
 4. The plugin will appear in the **Tools** menu as "Load from URL"
 
 ### Quick Installation Commands
-```bash
-# macOS/Linux
-mkdir -p ~/.josm/plugins
-curl -L "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/URLLoader.jar" -o ~/.josm/plugins/URLLoader.jar
 
-# Windows (PowerShell)
+**macOS:**
+```bash
+mkdir -p ~/Library/JOSM/plugins
+curl -L "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/URLLoader.jar" -o ~/Library/JOSM/plugins/URLLoader.jar
+```
+
+**Linux:**
+```bash
+mkdir -p ~/.local/share/JOSM/plugins
+curl -L "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/URLLoader.jar" -o ~/.local/share/JOSM/plugins/URLLoader.jar
+
+```
+
+**Windows (PowerShell):**
+```powershell
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\JOSM\plugins"
 Invoke-WebRequest -Uri "https://github.com/kshitijrajsharma/lcgeojosmplugin/releases/latest/download/URLLoader.jar" -OutFile "$env:APPDATA\JOSM\plugins\URLLoader.jar"
 ```
