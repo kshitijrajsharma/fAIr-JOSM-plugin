@@ -42,6 +42,13 @@ public class FAIrLoader {
         DataSet dataSet = parseGeoJSON(geoJsonData);
         addLayerToJOSMWithName(dataSet, layerName);
     }
+    
+    public void loadFromURL(String urlString, Bounds bounds, String layerName, String defaultTag) throws IOException, URISyntaxException {
+        String finalUrl = prepareFinalURL(urlString, bounds);
+        String geoJsonData = fetchData(finalUrl);
+        DataSet dataSet = parseGeoJSON(geoJsonData, defaultTag);
+        addLayerToJOSMWithName(dataSet, layerName);
+    }
 
     private String prepareFinalURL(String urlString, Bounds bounds) {
         if (bounds == null) {
@@ -82,22 +89,30 @@ public class FAIrLoader {
     }
 
     private DataSet parseGeoJSON(String geoJsonData) throws IOException {
+        return parseGeoJSON(geoJsonData, "building=yes");
+    }
+
+    private DataSet parseGeoJSON(String geoJsonData, String defaultTag) throws IOException {
         DataSet dataSet = new DataSet();
         JsonNode rootNode = objectMapper.readTree(geoJsonData);
         
         if (rootNode.has("features")) {
             JsonNode features = rootNode.get("features");
             for (JsonNode feature : features) {
-                parseFeature(feature, dataSet);
+                parseFeature(feature, dataSet, defaultTag);
             }
         } else if (rootNode.has("geometry")) {
-            parseFeature(rootNode, dataSet);
+            parseFeature(rootNode, dataSet, defaultTag);
         }
         
         return dataSet;
     }
 
     private void parseFeature(JsonNode feature, DataSet dataSet) {
+        parseFeature(feature, dataSet, "building=yes");
+    }
+
+    private void parseFeature(JsonNode feature, DataSet dataSet, String defaultTag) {
         JsonNode geometry = feature.get("geometry");
         if (geometry == null) return;
         
@@ -112,7 +127,7 @@ public class FAIrLoader {
                 parseLineString(coordinates, dataSet);
                 break;
             case "Polygon":
-                parsePolygon(coordinates, dataSet);
+                parsePolygon(coordinates, dataSet, defaultTag);
                 break;
             case "MultiPoint":
                 parseMultiPoint(coordinates, dataSet);
@@ -121,7 +136,7 @@ public class FAIrLoader {
                 parseMultiLineString(coordinates, dataSet);
                 break;
             case "MultiPolygon":
-                parseMultiPolygon(coordinates, dataSet);
+                parseMultiPolygon(coordinates, dataSet, defaultTag);
                 break;
         }
     }
@@ -146,8 +161,15 @@ public class FAIrLoader {
     }
 
     private void parsePolygon(JsonNode coordinates, DataSet dataSet) {
-        for (JsonNode ring : coordinates) {
+        parsePolygon(coordinates, dataSet, "building=yes");
+    }
+
+    private void parsePolygon(JsonNode coordinates, DataSet dataSet, String defaultTag) {
+        for (int i = 0; i < coordinates.size(); i++) {
+            JsonNode ring = coordinates.get(i);
             Way way = new Way();
+            
+            // Parse all coordinates for this ring
             for (JsonNode coord : ring) {
                 double lon = coord.get(0).asDouble();
                 double lat = coord.get(1).asDouble();
@@ -155,6 +177,26 @@ public class FAIrLoader {
                 dataSet.addPrimitive(node);
                 way.addNode(node);
             }
+            
+            // Ensure the way is closed by checking if first and last nodes are the same
+            if (way.getNodesCount() > 0) {
+                Node firstNode = way.getNode(0);
+                Node lastNode = way.getNode(way.getNodesCount() - 1);
+                
+                // If not closed, close it by adding the first node again
+                if (!firstNode.getCoor().equals(lastNode.getCoor())) {
+                    way.addNode(firstNode);
+                }
+                
+                if (i == 0) { 
+                    // Outer ring - add custom tag
+                    applyCustomTag(way, defaultTag);
+                } else { 
+                    // Inner ring (hole) - add area tag to indicate it's an area
+                    way.put("area", "yes");
+                }
+            }
+            
             dataSet.addPrimitive(way);
         }
     }
@@ -172,9 +214,35 @@ public class FAIrLoader {
     }
 
     private void parseMultiPolygon(JsonNode coordinates, DataSet dataSet) {
+        parseMultiPolygon(coordinates, dataSet, "building=yes");
+    }
+
+    private void parseMultiPolygon(JsonNode coordinates, DataSet dataSet, String defaultTag) {
         for (JsonNode polygon : coordinates) {
-            parsePolygon(polygon, dataSet);
+            parsePolygon(polygon, dataSet, defaultTag);
         }
+    }
+    
+    private void applyCustomTag(Way way, String defaultTag) {
+        if (defaultTag == null || defaultTag.trim().isEmpty()) {
+            way.put("building", "yes"); 
+            return;
+        }
+        
+        String tag = defaultTag.trim();
+        if (tag.contains("=")) {
+            String[] parts = tag.split("=", 2);
+            if (parts.length == 2) {
+                String key = parts[0].trim();
+                String value = parts[1].trim();
+                if (!key.isEmpty() && !value.isEmpty()) {
+                    way.put(key, value);
+                    return;
+                }
+            }
+        }
+        
+        way.put("building", "yes");
     }
 
     private void addLayerToJOSM(DataSet dataSet, String sourceUrl) {

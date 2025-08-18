@@ -19,10 +19,12 @@ public class FAIrLoaderDialog extends JDialog {
     private static final String PREF_PREDICTION_UID = "fairloader.prediction_uid";
     private static final String PREF_SERVER_SELECTION = "fairloader.server_selection";
     private static final String PREF_FORMAT_SELECTION = "fairloader.format_selection";
+    private static final String PREF_DEFAULT_TAG = "fairloader.default_tag";
     
     private JTextField predictionUidField;
     private JComboBox<ServerOption> serverComboBox;
     private JComboBox<FormatOption> formatComboBox;
+    private JTextField defaultTagField;
     private JTextArea urlTextArea;
     private JTextField bboxField;
     private JButton loadButton;
@@ -85,6 +87,9 @@ public class FAIrLoaderDialog extends JDialog {
         };
         formatComboBox = new JComboBox<>(formats);
         formatComboBox.setSelectedIndex(0);
+        
+        defaultTagField = new JTextField("building=yes", 20);
+        defaultTagField.setToolTipText("Default tag for imported polygons (e.g., building=yes, landuse=forest, etc.)");
         
         urlTextArea = new JTextArea(3, 50);
         urlTextArea.setLineWrap(true);
@@ -149,6 +154,19 @@ public class FAIrLoaderDialog extends JDialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
         gbc.insets = new Insets(5, 10, 5, 5);
+        mainPanel.add(new JLabel("Default Tag:"), gbc);
+        
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        gbc.insets = new Insets(5, 5, 5, 10);
+        mainPanel.add(defaultTagField, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        gbc.insets = new Insets(5, 10, 5, 5);
         mainPanel.add(new JLabel("Current Bbox:"), gbc);
         
         gbc.gridx = 1;
@@ -158,14 +176,14 @@ public class FAIrLoaderDialog extends JDialog {
         mainPanel.add(bboxField, gbc);
         
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
         gbc.insets = new Insets(15, 10, 5, 5);
         mainPanel.add(new JLabel("Generated URL:"), gbc);
         
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -293,8 +311,12 @@ public class FAIrLoaderDialog extends JDialog {
         SwingUtilities.invokeLater(() -> {
             try {
                 Bounds bounds = getCurrentViewBounds();
+                String defaultTag = defaultTagField.getText().trim();
+                if (defaultTag.isEmpty()) {
+                    defaultTag = "building=yes"; // Fallback to default
+                }
                 FAIrLoader loader = new FAIrLoader();
-                loader.loadFromURL(url, bounds, "fAIr_" + predictionUid);
+                loader.loadFromURL(url, bounds, "fAIr_" + predictionUid, defaultTag);
                 
                 JOptionPane.showMessageDialog(MainApplication.getMainFrame(), 
                     "Successfully loaded fAIr prediction data for UID: " + predictionUid + "\n" +
@@ -348,6 +370,10 @@ public class FAIrLoaderDialog extends JDialog {
         if (savedFormatIndex >= 0 && savedFormatIndex < formatComboBox.getItemCount()) {
             formatComboBox.setSelectedIndex(savedFormatIndex);
         }
+        
+        // Load default tag
+        String savedDefaultTag = Config.getPref().get(PREF_DEFAULT_TAG, "building=yes");
+        defaultTagField.setText(savedDefaultTag);
     }
     
     /**
@@ -362,5 +388,8 @@ public class FAIrLoaderDialog extends JDialog {
         
         // Save format selection
         Config.getPref().putInt(PREF_FORMAT_SELECTION, formatComboBox.getSelectedIndex());
+        
+        // Save default tag
+        Config.getPref().put(PREF_DEFAULT_TAG, defaultTagField.getText().trim());
     }
 }
