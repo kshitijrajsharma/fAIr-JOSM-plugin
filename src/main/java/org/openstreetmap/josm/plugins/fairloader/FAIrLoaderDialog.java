@@ -247,10 +247,10 @@ public class FAIrLoaderDialog extends JDialog {
             return;
         }
         
-        String url = String.format("https://%s/api/v1/workspace/stream/%s/labels.fgb/?bbox={bbox}&format=%s",
+        String url = String.format("https://%s/api/v1/workspace/stream/%s/labels.fgb?bbox={bbox}",
                 selectedServer.domain,
-                predictionUid,
-                selectedFormat.value);
+                predictionUid);
+                // selectedFormat.value);
         
         urlTextArea.setText(url);
         loadButton.setEnabled(true);
