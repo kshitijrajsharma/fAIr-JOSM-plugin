@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.fairloader;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.spi.preferences.Config;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -14,6 +15,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 public class FAIrLoaderDialog extends JDialog {
+    
+    private static final String PREF_PREDICTION_UID = "fairloader.prediction_uid";
+    private static final String PREF_SERVER_SELECTION = "fairloader.server_selection";
+    private static final String PREF_FORMAT_SELECTION = "fairloader.format_selection";
     
     private JTextField predictionUidField;
     private JComboBox<ServerOption> serverComboBox;
@@ -58,6 +63,7 @@ public class FAIrLoaderDialog extends JDialog {
         initComponents();
         setupLayout();
         setupListeners();
+        loadPreferences();
         updateURL();
         pack();
         setLocationRelativeTo(parent);
@@ -215,6 +221,7 @@ public class FAIrLoaderDialog extends JDialog {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                savePreferences();
                 dispose();
             }
         });
@@ -240,7 +247,7 @@ public class FAIrLoaderDialog extends JDialog {
             return;
         }
         
-        String url = String.format("https://%s/api/v1/workspace/stream/%s/labels.fgb?bbox={bbox}&format=%s",
+        String url = String.format("https://%s/api/v1/workspace/stream/%s/labels.fgb/?bbox={bbox}&format=%s",
                 selectedServer.domain,
                 predictionUid,
                 selectedFormat.value);
@@ -278,6 +285,9 @@ public class FAIrLoaderDialog extends JDialog {
             return;
         }
 
+        // Save preferences before loading
+        savePreferences();
+        
         dispose();
 
         SwingUtilities.invokeLater(() -> {
@@ -317,5 +327,40 @@ public class FAIrLoaderDialog extends JDialog {
             // Map not ready yet
         }
         return null;
+    }
+    
+    /**
+     * Load preferences and restore previous values
+     */
+    private void loadPreferences() {
+        // Load prediction UID
+        String savedPredictionUid = Config.getPref().get(PREF_PREDICTION_UID, "");
+        predictionUidField.setText(savedPredictionUid);
+        
+        // Load server selection
+        int savedServerIndex = Config.getPref().getInt(PREF_SERVER_SELECTION, 0);
+        if (savedServerIndex >= 0 && savedServerIndex < serverComboBox.getItemCount()) {
+            serverComboBox.setSelectedIndex(savedServerIndex);
+        }
+        
+        // Load format selection
+        int savedFormatIndex = Config.getPref().getInt(PREF_FORMAT_SELECTION, 0);
+        if (savedFormatIndex >= 0 && savedFormatIndex < formatComboBox.getItemCount()) {
+            formatComboBox.setSelectedIndex(savedFormatIndex);
+        }
+    }
+    
+    /**
+     * Save current preferences
+     */
+    private void savePreferences() {
+        // Save prediction UID
+        Config.getPref().put(PREF_PREDICTION_UID, predictionUidField.getText().trim());
+        
+        // Save server selection
+        Config.getPref().putInt(PREF_SERVER_SELECTION, serverComboBox.getSelectedIndex());
+        
+        // Save format selection
+        Config.getPref().putInt(PREF_FORMAT_SELECTION, formatComboBox.getSelectedIndex());
     }
 }
