@@ -88,8 +88,8 @@ public class FAIrLoaderDialog extends JDialog {
         formatComboBox = new JComboBox<>(formats);
         formatComboBox.setSelectedIndex(0);
         
-        defaultTagField = new JTextField("building=yes", 20);
-        defaultTagField.setToolTipText("Default tag for imported polygons (e.g., building=yes, landuse=forest, etc.)");
+        defaultTagField = new JTextField("building=yes,source=fAIr", 25);
+        defaultTagField.setToolTipText("Default tags for imported polygons (e.g., building=yes,source=fAIr,landuse=forest)");
         
         urlTextArea = new JTextArea(3, 50);
         urlTextArea.setLineWrap(true);
@@ -313,7 +313,7 @@ public class FAIrLoaderDialog extends JDialog {
                 Bounds bounds = getCurrentViewBounds();
                 String defaultTag = defaultTagField.getText().trim();
                 if (defaultTag.isEmpty()) {
-                    defaultTag = "building=yes"; // Fallback to default
+                    defaultTag = "building=yes,source=fAIr"; // Fallback to default
                 }
                 FAIrLoader loader = new FAIrLoader();
                 loader.loadFromURL(url, bounds, "fAIr_" + predictionUid, defaultTag);
@@ -372,7 +372,7 @@ public class FAIrLoaderDialog extends JDialog {
         }
         
         // Load default tag
-        String savedDefaultTag = Config.getPref().get(PREF_DEFAULT_TAG, "building=yes");
+        String savedDefaultTag = Config.getPref().get(PREF_DEFAULT_TAG, "building=yes,source=fAIr");
         defaultTagField.setText(savedDefaultTag);
     }
     

@@ -89,7 +89,7 @@ public class FAIrLoader {
     }
 
     private DataSet parseGeoJSON(String geoJsonData) throws IOException {
-        return parseGeoJSON(geoJsonData, "building=yes");
+        return parseGeoJSON(geoJsonData, "building=yes,source=fAIr");
     }
 
     private DataSet parseGeoJSON(String geoJsonData, String defaultTag) throws IOException {
@@ -109,7 +109,7 @@ public class FAIrLoader {
     }
 
     private void parseFeature(JsonNode feature, DataSet dataSet) {
-        parseFeature(feature, dataSet, "building=yes");
+        parseFeature(feature, dataSet, "building=yes,source=fAIr");
     }
 
     private void parseFeature(JsonNode feature, DataSet dataSet, String defaultTag) {
@@ -161,7 +161,7 @@ public class FAIrLoader {
     }
 
     private void parsePolygon(JsonNode coordinates, DataSet dataSet) {
-        parsePolygon(coordinates, dataSet, "building=yes");
+        parsePolygon(coordinates, dataSet, "building=yes,source=fAIr");
     }
 
     private void parsePolygon(JsonNode coordinates, DataSet dataSet, String defaultTag) {
@@ -214,7 +214,7 @@ public class FAIrLoader {
     }
 
     private void parseMultiPolygon(JsonNode coordinates, DataSet dataSet) {
-        parseMultiPolygon(coordinates, dataSet, "building=yes");
+        parseMultiPolygon(coordinates, dataSet, "building=yes,source=fAIr");
     }
 
     private void parseMultiPolygon(JsonNode coordinates, DataSet dataSet, String defaultTag) {
@@ -223,26 +223,42 @@ public class FAIrLoader {
         }
     }
     
-    private void applyCustomTag(Way way, String defaultTag) {
-        if (defaultTag == null || defaultTag.trim().isEmpty()) {
-            way.put("building", "yes"); 
+    /**
+     * Apply custom tags to a way. Handles multiple key=value pairs separated by commas.
+     */
+    private void applyCustomTag(Way way, String defaultTags) {
+        if (defaultTags == null || defaultTags.trim().isEmpty()) {
+            way.put("building", "yes"); // Fallback
+            way.put("source", "fAIr");
             return;
         }
         
-        String tag = defaultTag.trim();
-        if (tag.contains("=")) {
-            String[] parts = tag.split("=", 2);
-            if (parts.length == 2) {
-                String key = parts[0].trim();
-                String value = parts[1].trim();
-                if (!key.isEmpty() && !value.isEmpty()) {
-                    way.put(key, value);
-                    return;
+        String tags = defaultTags.trim();
+        
+        // Split by comma to handle multiple tags
+        String[] tagPairs = tags.split(",");
+        boolean hasValidTag = false;
+        
+        for (String tagPair : tagPairs) {
+            tagPair = tagPair.trim();
+            if (tagPair.contains("=")) {
+                String[] parts = tagPair.split("=", 2);
+                if (parts.length == 2) {
+                    String key = parts[0].trim();
+                    String value = parts[1].trim();
+                    if (!key.isEmpty() && !value.isEmpty()) {
+                        way.put(key, value);
+                        hasValidTag = true;
+                    }
                 }
             }
         }
         
-        way.put("building", "yes");
+        // If no valid tags were found, fall back to defaults
+        if (!hasValidTag) {
+            way.put("building", "yes");
+            way.put("source", "fAIr");
+        }
     }
 
     private void addLayerToJOSM(DataSet dataSet, String sourceUrl) {
